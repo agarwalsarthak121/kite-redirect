@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Back to T-Display</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #111; color: #ddd; padding: 24px; }
+  code { background: #222; padding: 2px 6px; border-radius: 4px; word-break: break-all; }
+  a { color: #6aa8ff; }
+</style>
+</head>
+<body>
+<h2 id="title">Sending you back to the board…</h2>
+<p id="msg"></p>
+<script>
+  // Kite redirects here with ?request_token=...&status=...&board=IP:PORT
+  // (board comes from the redirect_params the board put in the login link).
+  // This page only forwards those values to the board on your home Wi-Fi.
+  var q = new URLSearchParams(location.search);
+  var board = q.get("board");
+  var token = q.get("request_token");
+  var status = q.get("status") || "";
+  var msg = document.getElementById("msg");
+  if (board && token && /^[0-9.]+:[0-9]+$/.test(board)) {
+    var target = "http://" + board + "/kite?status=" + encodeURIComponent(status) +
+                 "&request_token=" + encodeURIComponent(token);
+    msg.innerHTML = 'If nothing happens, <a href="' + target + '">tap here</a>.';
+    location.replace(target);
+  } else {
+    document.getElementById("title").textContent = "Couldn't find the board";
+    msg.innerHTML = "Copy this page's full address and paste it on the board's login page.";
+  }
+</script>
+</body>
+</html>
